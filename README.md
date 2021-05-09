@@ -9,7 +9,7 @@ To install the plugin to your Flutter project use the CLI Tool:
 
 ```
 #!bash
-$ flutter pub get
+$ flutter pub add cnvitals
 ```
 
 #### Full example
