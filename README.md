@@ -16,7 +16,7 @@ $ flutter pub add cnvitals
 
 ```javascript
   // Start measurement, the measurement will stop automatically on the end.  
-  let values = await Cnvitals.getVitals(api_key,scan_token,user_id);
+  let values = await Cnvitals.getVitals(api_key,scan_token,employee_id, language, color_code, measured_height, measured_weight, posture);
 
   //successCallback
   The function to be executed when the reading has successfully completed or failed
@@ -29,7 +29,12 @@ $ flutter pub add cnvitals
   {
       api_key : "sample_key",
       scan_token : "sample_token",
-      user_id : "sample_user_id"
+      employee_id: 'sample_token',
+      language: 'en',
+      color_code: '#c82633',
+      measured_height: '180',
+      measured_weight: '60',
+      posture: 'posture' 
   } 
 });
 ````

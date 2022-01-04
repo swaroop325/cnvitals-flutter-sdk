@@ -42,8 +42,12 @@
         
         NSString *api_key = call.arguments[@"api_key"];
         NSString *scan_token = call.arguments[@"scan_token"];
-        NSString *user_id = call.arguments[@"user_id"];
-        NSDictionary *postDict = @{@"api_key":api_key, @"scan_token":scan_token,@"user_id":user_id };
+        NSString *color_code = call.arguments[@"color_code"];
+        NSString *employee_id = call.arguments[@"employee_id"];
+        NSString *measured_height= call.arguments[@"measured_height"];
+        NSString *measured_weight= call.arguments[@"measured_weight"];
+        NSString *posture = call.arguments[@"posture"];
+        NSDictionary *postDict = @{@"api_key":api_key, @"scan_token":scan_token,@"employee_id":employee_id,@"measured_height": measured_height, @"measured_weight":measured_weight,@"posture": posture };
         _callbackResult = result;
         dispatch_async(dispatch_get_main_queue(), ^{
             UIStoryboard *sb = [UIStoryboard storyboardWithName:@"bodyvitals" bundle:nil];
@@ -76,6 +80,9 @@
 - (void)heartRateUpdate:(int)bpm{
     self.bpms = bpm;
 }
+- (void)apiResponseUpdate:(NSString *)apiResponse{
+    self.apiResponse = apiResponse;
+}
 
 - (void)Spo2Update:(int)so2{
     self.so2 = so2;
@@ -93,6 +100,10 @@
     self.ecgdata = ecgData;
 }
 
+- (void)setHeartDataArray:(NSString *)heartDataArray{
+    self.heartdataArray = heartDataArray;
+}
+
 - (void)heartRateEnd{
     self.detecting = false;
     
@@ -106,7 +117,8 @@
     [dict setValue:myRespirationRate forKey:@"breath"];
     [dict setValue:self.ppgdata forKey:@"ppgdata"];
     [dict setValue:self.ecgdata forKey:@"ecgdata"];
-    
+    [dict setValue:self.heartdataArray forKey:@"heartDataArray"];
+    [dict setValue:self.apiResponse forKey:@"apiResponse"];
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
                                                        options:NSJSONWritingPrettyPrinted error:&error];

@@ -60,7 +60,12 @@ public class CnvitalsPlugin implements FlutterPlugin, MethodCallHandler, Activit
         Intent intent = new Intent(context.getApplicationContext(), Calibration.class);
         intent.putExtra("api_key", (String) call.argument("api_key"));
         intent.putExtra("scan_token", (String) call.argument("scan_token"));
-        intent.putExtra("user_id", (String) call.argument("user_id"));
+        intent.putExtra("employee_id", (String) call.argument("employee_id"));
+        intent.putExtra("language", (String) call.argument("language"));
+        intent.putExtra("color_code", (String) call.argument("color_code"));
+        intent.putExtra("measured_height", (String) call.argument("measured_height"));
+        intent.putExtra("measured_weight", (String) call.argument("measured_weight"));
+        intent.putExtra("posture", (String) call.argument("posture"));
         activity.startActivityForResult(intent, 90);
     }
 
@@ -71,17 +76,19 @@ public class CnvitalsPlugin implements FlutterPlugin, MethodCallHandler, Activit
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
+        SharedPreferences pref = context.getSharedPreferences("CNV", 0);
+        String otherResponse = pref.getString("message", "");
+        JSONObject item = new JSONObject();
         if (resultCode == RESULT_OK) {
             StringBuilder str = new StringBuilder();
-            JSONObject item = new JSONObject();
-            SharedPreferences pref = context.getSharedPreferences("CNV", 0);
             int heartrate = pref.getInt("heart_rate", 0);
             int O2R = pref.getInt("spo2", 0);
             int Breath = pref.getInt("resp_rate", 0);
             int BPM = pref.getInt("heart_rate_cnv", 0);
             String ppgData = pref.getString("ecgdata", "");
             String ecgData = pref.getString("ppgdata", "");
-            String heartData = pref.getString("heartdata", "");
+            String heartDataArray = pref.getString("heartDataArray", "");
+            String apiResponse = pref.getString("api_result", "");
             try {
                 item.put("breath", Breath);
                 item.put("O2R", O2R);
@@ -90,15 +97,20 @@ public class CnvitalsPlugin implements FlutterPlugin, MethodCallHandler, Activit
                 item.put("ecgdata", ecgData);
                 item.put("ppgdata", ppgData);
                 item.put("heartdata", heartData);
+                item.put("heartDataArray", heartDataArray);
+                item.put("apiResponse",apiResponse)
             } catch (JSONException e) {
 
             }
             mResult.success(item.toString());
-        } else if (resultCode == 2) {
-            mResult.success("license invalid");
-        }
-        else if (resultCode == 0) {
-            mResult.success("cancelled");
+        } else {
+            try {
+                item.put("message", otherResponse);
+                item.put("reason", "Cancelled");
+                mResult.success(item.toString());
+            } catch (JSONException e) {
+
+            }
         }
         return false;
     }
